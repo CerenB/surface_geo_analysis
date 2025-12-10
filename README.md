@@ -1,13 +1,49 @@
-# The pipeline 
-Here the end goal is to calculate the geodesic distance.  
+# Surface Geodesic Analysis Pipeline
 
-First we move from native space to either freesurfer or fs_LR spaces (volume to surface). 
+Tools for calculating geodesic distances on cortical surfaces. This pipeline converts volumetric fMRI data to surface space (FreeSurfer or fs_LR) and computes geodesic distances between activation peaks.
 
-Then we calculate the geodesic distance on the surface
+## Prerequisites
 
+### Required Software
+- [FreeSurfer](https://surfer.nmr.mgh.harvard.edu/) (tested with v7.x)
+- [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki)
+- [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) (`wb_command`)
+- Python 3.x with packages: `numpy`, `nibabel`, `pandas`
 
+### Required Data: CBIG Templates
 
-# Volume to space conversions 
+This pipeline requires the CBIG surface templates and atlases (9.6 GB). 
+
+**📦 Download from Zenodo:** [CBIG folder](https://zenodo.org/records/XXXXX) *(DOI and link will be updated after upload completes)*
+
+**Alternative:** Clone directly from the original CBIG repository:
+```bash
+git clone https://github.com/ThomasYeoLab/CBIG.git
+```
+
+After downloading, place the `CBIG/` folder in the root of this repository:
+```
+surface_geo_analysis/
+├── CBIG/                    # ← Extract here
+│   └── data/
+│       └── templates/
+│           └── surface/
+│               └── fs_LR_32k/
+├── batch_surface_fs_LR.sh
+├── calculate_geodesic_distance.sh
+└── ...
+```
+
+**Note:** The `CBIG/` folder is excluded from git tracking due to its size.
+
+---
+
+## Pipeline Overview
+
+1. **Volume to Surface Conversion:** Convert volumetric statistical maps (`.nii`) to surface files (`.func.gii`)
+2. **Geodesic Distance Calculation:** Compute distances between activation peaks on the cortical surface
+
+# Volume to Space Conversions 
 
 ##  Working on fs_LR space: One main function
 Here is the main function to be used for all the volume, ```spmT.nii``` files into surface files (```.func.gii```)
