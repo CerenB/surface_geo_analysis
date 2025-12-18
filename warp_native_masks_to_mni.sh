@@ -47,7 +47,7 @@ esac
 
 # Determine session based on subject ID
 case "$subject" in
-  sub-ctrl003|sub-ctrl004|sub-ctrl006|sub-ctrl007|sub-ctrl008|sub-ctrl009|sub-ctrl010|sub-ctrl011|sub-ctrl012|sub-ctrl014|sub-ctrl016|sub-ctrl017)
+  sub-ctrl003|sub-ctrl004|sub-ctrl005|sub-ctrl006|sub-ctrl007|sub-ctrl008|sub-ctrl009|sub-ctrl010|sub-ctrl011|sub-ctrl012|sub-ctrl014)
     session="ses-002"
     ;;
   sub-ctrl015)
