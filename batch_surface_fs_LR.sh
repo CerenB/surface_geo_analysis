@@ -149,3 +149,21 @@ for subj in "${participants[@]}"; do
   bash convert_surf_roi_to_vol.sh "$subj"
 done
 
+# warp the native volumetric ROIs to MNI space
+echo "Warping native volumetric ROIs to MNI space..."
+
+# Interpolation options:
+#   NearestNeighbor (default, label-safe)
+#   BSpline          (smooth; will be re-binarized in the warp script)
+WARP_INTERP="NearestNeighbor"  # change to BSpline to test smooth interpolation
+
+for subj in "${participants[@]}"; do
+  bash warp_native_masks_to_mni.sh "$subj" "$WARP_INTERP"
+done
+
+# Example calls:
+# bash warp_native_masks_to_mni.sh sub-ctrl001 NearestNeighbor
+# bash warp_native_masks_to_mni.sh sub-ctrl001 BSpline
+
+# test different interpolation methods for warping
+bash test_interpolations.sh
