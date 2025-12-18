@@ -6,7 +6,7 @@
 # Default interpolation: NearestNeighbor (safe for labels)
 # Optional: BSpline (smooth) then re-binarize after warp+mask
 # Usage: bash warp_native_masks_to_mni.sh <subject_id> [interp]
-#   interp: NearestNeighbor (default) | BSpline
+#   interp: NearestNeighbor (default) | Linear | BSpline
 # Example: bash warp_native_masks_to_mni.sh sub-ctrl001
 
 set -e
@@ -25,15 +25,22 @@ fi
 case "$interp" in
   NearestNeighbor|nn|nearest|NEAREST|Nearest)
     interp_flag="NearestNeighbor"
+    method="nearest"
     do_binarize=0
     ;;
-  BSpline|bspline|BSPLINE)
+  Linear|linear|LINear)
+    interp_flag="Linear"
+    method="linear"
+    do_binarize=1
+    ;;
+  BSpline|bspline|BSPLINE|BSpline[3])
     interp_flag="BSpline[3]"
+    method="bspline"
     do_binarize=1
     ;;
   *)
     echo "ERROR: Unknown interp option: $interp"
-    echo "       Use NearestNeighbor or BSpline"
+    echo "       Use NearestNeighbor, Linear or BSpline"
     exit 1
     ;;
 esac
@@ -55,12 +62,13 @@ case "$subject" in
 esac
 
 # Base directories
-native_masks_dir="/Volumes/extreme 1/Cerens_files/fMRI/GlasserAtlas/Glasser_ROIs_sensorimotor/volumetric_ROIs/binary/${subject}"
-fmriprep_anat_dir="/Volumes/extreme 1/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/fmriprep/${subject}/${session}/anat"
-bidspm_anat_dir="/Volumes/extreme 1/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/bidspm-preproc/${subject}/${session}/anat"
-output_dir="/Volumes/extreme 1/Cerens_files/fMRI/GlasserAtlas/Glasser_ROIs_sensorimotor/volumetric_MNI2009cAsym/${subject}"
+native_masks_dir="/Volumes/extreme/Cerens_files/fMRI/GlasserAtlas/Glasser_ROIs_sensorimotor/volumetric_ROIs/binary/${subject}"
+fmriprep_anat_dir="/Volumes/extreme/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/fmriprep/${subject}/${session}/anat"
+bidspm_anat_dir="/Volumes/extreme/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/bidspm-preproc/${subject}/${session}/anat"
+output_dir_base="/Volumes/extreme/Cerens_files/fMRI/GlasserAtlas/Glasser_ROIs_sensorimotor/volumetric_MNI2009cAsym"
 
-# Create output directory
+# Create output directory: base/method/subject
+output_dir="$output_dir_base/$method/$subject"
 mkdir -p "$output_dir"
 
 # Reference volume in MNI2009cAsym space (from bidspm-preproc)
@@ -164,4 +172,6 @@ echo ""
 echo "=========================================="
 echo "Warping complete!"
 echo "Output directory: $output_dir"
+echo "Folders use method/subject structure under:"
+echo "  $output_dir_base/{nearest|linear|bspline}/$subject/"
 ls -lh "$output_dir"/*.nii* 2>/dev/null || echo "No .nii files created"

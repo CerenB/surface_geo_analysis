@@ -155,7 +155,9 @@ echo "Warping native volumetric ROIs to MNI space..."
 # Interpolation options:
 #   NearestNeighbor (default, label-safe)
 #   BSpline          (smooth; will be re-binarized in the warp script)
-WARP_INTERP="NearestNeighbor"  # change to BSpline to test smooth interpolation
+WARP_INTERP="BSpline"  # change to NearestNeighbor or BSpline to test smooth interpolation
+
+participants=(sub-ctrl{001..002} )
 
 for subj in "${participants[@]}"; do
   bash warp_native_masks_to_mni.sh "$subj" "$WARP_INTERP"
