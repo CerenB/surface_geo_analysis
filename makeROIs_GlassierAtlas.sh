@@ -1,7 +1,12 @@
 #!/bin/bash
 # Script to create ROIs from Glasser atlas based on specified area labels
-# Usage: ./makeROIs_GlassierAtlas.sh <hemisphere> <area_label>
-# Example: ./makeROIs_GlassierAtlas.sh L "3a|3b"
+# Usage:
+#   ./makeROIs_GlassierAtlas.sh <hemisphere> <area_label>
+#   ./makeROIs_GlassierAtlas.sh <hemisphere> <label_name> --exact
+# Examples:
+#   ./makeROIs_GlassierAtlas.sh L "3a|3b"
+#   ./makeROIs_GlassierAtlas.sh L 55b
+#   ./makeROIs_GlassierAtlas.sh L L_55b_ROI --exact
 
 # how to use:
 # bash makeROIs_GlassierAtlas.sh L 3a|3b
@@ -18,7 +23,8 @@ label_file="$path_glasser_path/label_list_CorticalAreasAndSubAreas.txt"
 mkdir -p "$outdir"
 
 HEMI="$1"           # L or R
-area_label="$2"     # e.g., "3", "3a", "3b", "4", "3a|3b"
+area_label="$2"     # e.g., "3", "3a", "3b", "4", "3a|3b", or "L_55b_ROI" with --exact
+match_mode="${3:-auto}"   # auto or --exact
 
 if [[ "$HEMI" == "L" ]]; then
   CORTEX="LEFT"
@@ -30,8 +36,17 @@ else
 fi
 
 
+# If --exact is supplied, match the full label name from the label list.
+if [[ "$match_mode" == "--exact" || "$match_mode" == "exact" ]]; then
+  if [[ "$area_label" == ${HEMI}_* ]]; then
+    pattern="^${area_label}$"
+    ROI_NAME="${area_label#${HEMI}_}"
+  else
+    pattern="^${HEMI}_${area_label}$"
+    ROI_NAME="${area_label}"
+  fi
 # If area_label contains a pipe (|), use it directly for regex, else match all sub-areas if just a number
-if [[ "$area_label" =~ \| ]]; then
+elif [[ "$area_label" =~ \| ]]; then
   pattern="^${HEMI}_(${area_label})_"
 elif [[ "$area_label" =~ ^[0-9]+$ ]]; then
   pattern="^${HEMI}_${area_label}[a-z]?_"   # matches 3, 3a, 3b, etc.
@@ -40,8 +55,10 @@ else
 fi
 
 # Create output roi name to save
-ROI_NAME="area${area_label}"
-ROI_NAME="${ROI_NAME//|/_}"   # Replace | with _ if present
+if [[ "$match_mode" != "--exact" && "$match_mode" != "exact" ]]; then
+  ROI_NAME="area${area_label}"
+  ROI_NAME="${ROI_NAME//|/_}"   # Replace | with _ if present
+fi
 
 # Create output directory for parcels if it doesn't exist
 labels=($(grep -E "$pattern" "$label_file" | cut -d' ' -f1))

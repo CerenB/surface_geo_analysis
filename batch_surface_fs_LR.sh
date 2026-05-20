@@ -16,7 +16,7 @@ cd /Users/battal/Documents/GitHub/surface_geo_analysis/
 
 # Base directories
 SURF_DIR="CBIG/data/templates/surface/fs_LR_32k/"
-TASK='somatotopy'  # 'somatotopy' or 'mototopy'
+TASK='mototopy'  # 'somatotopy' or 'mototopy'
 
 # Participants
 # somatotopy 
@@ -152,11 +152,15 @@ done
 # warp the native volumetric ROIs to MNI space
 echo "Warping native volumetric ROIs to MNI space..."
 
+
+# # # # NOTE 06/01/2026 I carried the volumetric_MNI2009cAsym folder into 
+# extreme/Cerens_files/fMRI/moebius_topo_analyses_outputs/derivatvies/cosmoMvpa/roi/glasser
+# # #  need to adapt the code when you run next time 
 # Interpolation options:
 #   NearestNeighbor (default, label-safe)
 #   BSpline          (smooth; will be re-binarized in the warp script)
-WARP_INTERP="bspline"  # change to NearestNeighbor or BSpline to test smooth interpolation
-participants=(sub-ctrl005 sub-ctrl016 sub-ctrl017)
+WARP_INTERP="NearestNeighbor"  # change to NearestNeighbor or BSpline to test smooth interpolation
+participants=(sub-ctrl014)
 
 
 for subj in "${participants[@]}"; do

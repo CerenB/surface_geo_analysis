@@ -65,7 +65,7 @@ esac
 native_masks_dir="/Volumes/extreme/Cerens_files/fMRI/GlasserAtlas/Glasser_ROIs_sensorimotor/volumetric_ROIs/binary/${subject}"
 fmriprep_anat_dir="/Volumes/extreme/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/fmriprep/${subject}/${session}/anat"
 bidspm_anat_dir="/Volumes/extreme/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/bidspm-preproc/${subject}/${session}/anat"
-output_dir_base="/Volumes/extreme/Cerens_files/fMRI/GlasserAtlas/Glasser_ROIs_sensorimotor/volumetric_MNI2009cAsym"
+output_dir_base="/Volumes/extreme/Cerens_files/fMRI/moebius_topo_analyses/outputs/derivatives/cosmoMvpa/roi/glasser/volumetric_MNI2009cAsym"
 
 # Create output directory: base/method/subject
 output_dir="$output_dir_base/$method/$subject"
